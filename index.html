@@ -1,1 +1,95 @@
-<h1>欢迎来到Hope的主页！</h1>
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hope 的个人主页</title>
+    <!-- 这里就是 CSS，负责美化页面 -->
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            max-width: 700px;
+            margin: 0 auto;
+            padding: 30px 20px;
+            background-color: #f8f9fa;
+            color: #24292e;
+        }
+        .card {
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #0366d6;
+            border-bottom: 2px solid #eaecef;
+            padding-bottom: 15px;
+        }
+        .btn {
+            display: inline-block;
+            background: #0366d6;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .btn:hover {
+            background: #0246a2;
+        }
+        .section {
+            margin-top: 25px;
+        }
+        a {
+            color: #0366d6;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <!-- HTML 头部 -->
+        <header>
+            <h1>👋 嗨，我是 Hope</h1>
+            <p>一名正在学习技术的创作者。欢迎来到我的小站！</p>
+        </header>
+
+        <!-- HTML 主要内容区 -->
+        <main>
+            <section class="section">
+                <h2>📖 关于我</h2>
+                <p>这里会放上你的自我介绍，可以聊聊你的兴趣爱好、正在学习的技术，或者想在这里分享什么内容。</p>
+            </section>
+
+            <section class="section">
+                <h2>🔗 找到我</h2>
+                <ul>
+                    <li>GitHub: <a href="https://github.com/Hope-HY" target="_blank">Hope-HY</a></li>
+                    <li>邮箱: <a href="mailto:youremail@example.com">发送邮件</a></li>
+                </ul>
+            </section>
+
+            <!-- 这里是一个简单的 JavaScript 交互示例 -->
+            <section class="section">
+                <button class="btn" id="greetBtn">打个招呼吧</button>
+            </section>
+        </main>
+
+        <!-- HTML 页脚 -->
+        <footer style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #eaecef; text-align: center; color: #586069;">
+            <p>© 2026 Hope. 通过 GitHub Pages 搭建。</p>
+        </footer>
+    </div>
+
+    <!-- 这里就是 JavaScript，负责交互功能 -->
+    <script>
+        document.getElementById('greetBtn').addEventListener('click', function() {
+            alert('欢迎你来到我的主页，很高兴遇见你！');
+        });
+    </script>
+</body>
+</html>
