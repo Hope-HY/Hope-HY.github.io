@@ -3,44 +3,95 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hope 的个人主页</title>
-    <!-- 这里就是 CSS，负责美化页面 -->
+    <title>Hope · 文档 & 代码小栈</title>
     <style>
+        /* ----- 基础 & 卡片样式 (保留原有风格并扩展) ----- */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+        }
+
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             line-height: 1.6;
-            max-width: 700px;
+            max-width: 900px;
             margin: 0 auto;
             padding: 30px 20px;
             background-color: #f8f9fa;
             color: #24292e;
         }
+
         .card {
             background: white;
-            border-radius: 10px;
-            padding: 30px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            border-radius: 20px;
+            padding: 30px 28px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+            transition: box-shadow 0.2s;
         }
+
         h1 {
             color: #0366d6;
             border-bottom: 2px solid #eaecef;
             padding-bottom: 15px;
+            font-weight: 600;
+            letter-spacing: -0.02em;
         }
+
+        h2 {
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: #1f2937;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        h2 i {
+            font-size: 1.4rem;
+        }
+
         .btn {
             display: inline-block;
             background: #0366d6;
             color: white;
             padding: 10px 20px;
-            border-radius: 6px;
+            border-radius: 40px;
             text-decoration: none;
             font-weight: 500;
+            border: none;
+            cursor: pointer;
+            font-size: 0.95rem;
+            transition: background 0.15s, transform 0.1s;
+            box-shadow: 0 2px 5px rgba(3,102,214,0.2);
         }
+
         .btn:hover {
             background: #0246a2;
+            transform: translateY(-1px);
         }
+
+        .btn-outline {
+            background: transparent;
+            color: #0366d6;
+            box-shadow: none;
+            border: 1.5px solid #0366d6;
+            padding: 8px 18px;
+        }
+        .btn-outline:hover {
+            background: #e6f0ff;
+            transform: none;
+        }
+
+        .btn-small {
+            padding: 5px 12px;
+            font-size: 0.85rem;
+            border-radius: 30px;
+        }
+
         .section {
-            margin-top: 25px;
+            margin-top: 32px;
         }
+
         a {
             color: #0366d6;
             text-decoration: none;
@@ -48,48 +99,586 @@
         a:hover {
             text-decoration: underline;
         }
+
+        /* ----- 文档/代码管理区域 (新增核心) ----- */
+        .filter-bar {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            margin: 20px 0 18px;
+            gap: 12px;
+        }
+
+        .filter-group {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            background: #f1f3f5;
+            border: none;
+            padding: 7px 18px;
+            border-radius: 30px;
+            font-weight: 500;
+            color: #374151;
+            cursor: pointer;
+            transition: all 0.15s;
+            font-size: 0.9rem;
+        }
+        .filter-btn.active {
+            background: #0366d6;
+            color: white;
+            box-shadow: 0 2px 6px rgba(3,102,214,0.3);
+        }
+
+        .stats-badge {
+            background: #eaeef2;
+            padding: 5px 14px;
+            border-radius: 30px;
+            font-size: 0.85rem;
+            color: #1f2937;
+        }
+
+        /* 项目卡片网格 */
+        .project-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            gap: 20px;
+            margin: 20px 0 10px;
+        }
+
+        .project-card {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 18px;
+            padding: 18px 18px 16px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+            transition: all 0.2s;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+        .project-card:hover {
+            border-color: #bdd3f0;
+            box-shadow: 0 8px 18px rgba(0,0,0,0.05);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+
+        .card-title {
+            font-weight: 700;
+            font-size: 1.15rem;
+            color: #0b1e33;
+            margin-right: 8px;
+            word-break: break-word;
+        }
+
+        .badge {
+            font-size: 0.7rem;
+            font-weight: 600;
+            padding: 3px 10px;
+            border-radius: 20px;
+            background: #eef2ff;
+            color: #1e40af;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            white-space: nowrap;
+        }
+        .badge.code {
+            background: #e6f7e6;
+            color: #0e6b0e;
+        }
+        .badge.doc {
+            background: #fff3d8;
+            color: #a34e00;
+        }
+
+        .card-desc {
+            color: #4b5563;
+            font-size: 0.9rem;
+            margin: 12px 0 16px;
+            line-height: 1.5;
+            flex: 1;
+        }
+
+        .card-link {
+            font-size: 0.9rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            margin-top: 6px;
+            font-weight: 500;
+        }
+
+        .card-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 6px;
+            border-top: 1px dashed #dee6ed;
+            padding-top: 12px;
+        }
+
+        .delete-btn {
+            background: none;
+            border: none;
+            color: #9ca3af;
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 4px 8px;
+            border-radius: 30px;
+            transition: all 0.15s;
+            line-height: 1;
+        }
+        .delete-btn:hover {
+            background: #fee2e2;
+            color: #c81e1e;
+        }
+
+        /* 添加表单 */
+        .add-panel {
+            background: #f9fafc;
+            border-radius: 20px;
+            padding: 18px 20px;
+            margin: 28px 0 10px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .form-title {
+            font-weight: 600;
+            margin-bottom: 14px;
+            color: #1e293b;
+        }
+
+        .form-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px 12px;
+            align-items: flex-end;
+        }
+
+        .input-group {
+            flex: 1 0 160px;
+            min-width: 140px;
+        }
+
+        .input-group label {
+            display: block;
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: #475569;
+            margin-bottom: 4px;
+        }
+
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1.5px solid #d1d9e6;
+            border-radius: 16px;
+            font-size: 0.9rem;
+            background: white;
+            transition: border 0.15s;
+        }
+        .input-group input:focus, .input-group select:focus {
+            border-color: #0366d6;
+            outline: none;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 8px;
+            margin-top: 16px;
+            flex-wrap: wrap;
+        }
+
+        .empty-message {
+            text-align: center;
+            color: #6b7a8a;
+            padding: 36px 20px;
+            background: #fafbfc;
+            border-radius: 30px;
+            font-style: italic;
+        }
+
+        footer {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #eaecef;
+            text-align: center;
+            color: #586069;
+        }
+
+        /* 微调 */
+        ul {
+            padding-left: 20px;
+        }
+        li {
+            margin: 6px 0;
+        }
+        .text-muted {
+            color: #68737e;
+            font-size: 0.9rem;
+        }
     </style>
 </head>
 <body>
-    <div class="card">
-        <!-- HTML 头部 -->
-        <header>
-            <h1>👋 嗨，我是 Hope</h1>
-            <p>一名正在学习技术的创作者。欢迎来到我的小站！</p>
-        </header>
+<div class="card">
+    <!-- 头部：个人介绍 -->
+    <header>
+        <h1>👋 嗨，我是 Hope</h1>
+        <p style="font-size: 1.1rem;">开发者 · 创作者 · 终身学习者。<br>这里记录我的思考、文档与代码片段。</p>
+    </header>
 
-        <!-- HTML 主要内容区 -->
-        <main>
-            <section class="section">
-                <h2>📖 关于我</h2>
-                <p>这里会放上你的自我介绍，可以聊聊你的兴趣爱好、正在学习的技术，或者想在这里分享什么内容。</p>
-            </section>
+    <main>
+        <!-- 关于我 -->
+        <section class="section">
+            <h2>📖 关于我</h2>
+            <p>热爱构建优雅的工具，喜欢把想法变成代码。目前专注于全栈技术、开发者工具和知识管理。在这里你可以看到我写的技术文档、实验性项目和实用代码。</p>
+            <p>🎯 正在探索：Rust + Tauri、LLM 应用、以及更高效的笔记系统。</p>
+        </section>
 
-            <section class="section">
-                <h2>🔗 找到我</h2>
-                <ul>
-                    <li>GitHub: <a href="https://github.com/Hope-HY" target="_blank">Hope-HY</a></li>
-                    <li>邮箱: <a href="mailto:youremail@example.com">发送邮件</a></li>
-                </ul>
-            </section>
+        <!-- 找到我 (保留并优化) -->
+        <section class="section">
+            <h2>🔗 找到我</h2>
+            <ul>
+                <li>🐙 GitHub: <a href="https://github.com/Hope-HY" target="_blank">Hope-HY</a> —— 开源项目与日常代码</li>
+                <li>📧 邮箱: <a href="mailto:hope.hello@proton.me">hope.hello@proton.me</a> (欢迎交流)</li>
+                <li>📝 偶尔写博客: <a href="#">笔记花园 (搭建中)</a></li>
+            </ul>
+        </section>
 
-            <!-- 这里是一个简单的 JavaScript 交互示例 -->
-            <section class="section">
-                <button class="btn" id="greetBtn">打个招呼吧</button>
-            </section>
-        </main>
+        <!-- 简单的交互按钮 (保留) -->
+        <section class="section">
+            <button class="btn" id="greetBtn">✨ 打个招呼吧</button>
+            <span style="margin-left: 16px; color: #576c7e;">↓ 下方管理我的文档/代码</span>
+        </section>
 
-        <!-- HTML 页脚 -->
-        <footer style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #eaecef; text-align: center; color: #586069;">
-            <p>© 2026 Hope. 通过 GitHub Pages 搭建。</p>
-        </footer>
-    </div>
+        <!-- ⭐ 核心：文档 & 代码管理区域 (数据驱动 + 本地管理) -->
+        <section class="section" id="projectHub">
+            <div style="display: flex; align-items: baseline; justify-content: space-between;">
+                <h2>📁 我的文档 & 代码库</h2>
+                <span class="stats-badge" id="itemCountDisplay">0 项</span>
+            </div>
+            <p class="text-muted">📌 可在线增删——数据保存在浏览器中，方便你随时整理作品。</p>
 
-    <!-- 这里就是 JavaScript，负责交互功能 -->
-    <script>
-        document.getElementById('greetBtn').addEventListener('click', function() {
-            alert('欢迎你来到我的主页，很高兴遇见你！');
-        });
-    </script>
+            <!-- 过滤栏 + 重置按钮 -->
+            <div class="filter-bar">
+                <div class="filter-group">
+                    <button class="filter-btn active" data-filter="all">全部</button>
+                    <button class="filter-btn" data-filter="doc">📄 文档</button>
+                    <button class="filter-btn" data-filter="code">💻 代码</button>
+                </div>
+                <button class="btn-outline btn-small" id="resetDefaultBtn" title="恢复默认示例数据">↻ 重置示例</button>
+            </div>
+
+            <!-- 卡片容器 (动态渲染) -->
+            <div id="projectContainer" class="project-grid">
+                <!-- JS 动态填充 -->
+            </div>
+
+            <!-- 添加新条目面板 -->
+            <div class="add-panel">
+                <div class="form-title">➕ 新建文档 / 代码片段</div>
+                <div class="form-row">
+                    <div class="input-group">
+                        <label>标题 *</label>
+                        <input type="text" id="newTitle" placeholder="例如：Git 工作流笔记" maxlength="40">
+                    </div>
+                    <div class="input-group">
+                        <label>描述</label>
+                        <input type="text" id="newDesc" placeholder="简短说明...">
+                    </div>
+                    <div class="input-group">
+                        <label>类型</label>
+                        <select id="newType">
+                            <option value="doc">📘 文档</option>
+                            <option value="code">⚙️ 代码</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label>链接 (可选)</label>
+                        <input type="text" id="newLink" placeholder="https://... 或留空">
+                    </div>
+                </div>
+                <div class="action-buttons">
+                    <button class="btn btn-small" id="addProjectBtn">✨ 添加条目</button>
+                    <span style="margin-left: auto; font-size:0.8rem; color:#5f6c7a;">点击卡片上的 🗑️ 可删除</span>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>© 2026 Hope · 由 GitHub Pages 驱动 · 灵感与代码自由生长</p>
+    </footer>
+</div>
+
+<script>
+    (function(){
+        "use strict";
+
+        // ---------- 数据 & 存储 ----------
+        const STORAGE_KEY = 'hope_doc_code_hub';
+        
+        // 默认示例数据 (文档/代码混合)
+        const DEFAULT_PROJECTS = [
+            { id: '1', title: '现代化 Git 工作流', description: '从 feature branch 到 rebase，团队协作规范笔记', type: 'doc', link: 'https://github.com/Hope-HY/git-workflow' },
+            { id: '2', title: 'CLI 天气小工具', description: 'Rust 练手项目，调用 OpenWeather API', type: 'code', link: 'https://github.com/Hope-HY/weather-cli' },
+            { id: '3', title: 'JavaScript 设计模式', description: '观察者、单例、工厂模式的实现与场景', type: 'doc', link: '' },
+            { id: '4', title: '个人博客主题', description: '轻量级 Hexo 主题，支持暗色模式', type: 'code', link: 'https://github.com/Hope-HY/hexo-theme-ink' },
+            { id: '5', title: 'Python 爬虫小抄', description: 'requests + BeautifulSoup 常用模版', type: 'code', link: '' },
+            { id: '6', title: 'Vim/Neovim 配置笔记', description: '高效编辑的环境搭建与插件清单', type: 'doc', link: 'https://github.com/Hope-HY/dotfiles' },
+        ];
+
+        // 当前项目数组 (从 localStorage 读取或初始化)
+        let projects = [];
+
+        // 当前过滤类型: 'all', 'doc', 'code'
+        let currentFilter = 'all';
+
+        // DOM 元素
+        const container = document.getElementById('projectContainer');
+        const countDisplay = document.getElementById('itemCountDisplay');
+        const filterBtns = document.querySelectorAll('.filter-btn');
+        const resetBtn = document.getElementById('resetDefaultBtn');
+        const addBtn = document.getElementById('addProjectBtn');
+        const newTitle = document.getElementById('newTitle');
+        const newDesc = document.getElementById('newDesc');
+        const newType = document.getElementById('newType');
+        const newLink = document.getElementById('newLink');
+        const greetBtn = document.getElementById('greetBtn');
+
+        // ---------- 辅助函数 ----------
+        function loadFromStorage() {
+            const stored = localStorage.getItem(STORAGE_KEY);
+            if (stored) {
+                try {
+                    const parsed = JSON.parse(stored);
+                    if (Array.isArray(parsed) && parsed.length) {
+                        projects = parsed;
+                        return;
+                    }
+                } catch (e) {}
+            }
+            // 默认数据 (深拷贝)
+            projects = DEFAULT_PROJECTS.map(p => ({ ...p, id: p.id || crypto.randomUUID?.() || Date.now() + '-' + Math.random() }));
+        }
+
+        function saveToStorage() {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(projects));
+        }
+
+        // 过滤后的数据
+        function getFilteredProjects() {
+            if (currentFilter === 'all') return projects.slice();
+            return projects.filter(p => p.type === currentFilter);
+        }
+
+        // 更新统计数字
+        function updateStats() {
+            const filtered = getFilteredProjects();
+            const total = projects.length;
+            countDisplay.textContent = `${filtered.length} / ${total} 项`;
+        }
+
+        // 渲染卡片
+        function render() {
+            const filtered = getFilteredProjects();
+            
+            if (filtered.length === 0) {
+                container.innerHTML = `<div class="empty-message">✨ 还没有内容，点击下方添加你的第一个文档或代码～</div>`;
+                updateStats();
+                return;
+            }
+
+            let html = '';
+            filtered.forEach(item => {
+                const typeLabel = item.type === 'doc' ? '文档' : '代码';
+                const badgeClass = item.type === 'doc' ? 'doc' : 'code';
+                const linkHtml = item.link ? 
+                    `<a class="card-link" href="${escapeHtml(item.link)}" target="_blank" rel="noopener">🔗 查看详情 →</a>` : 
+                    `<span class="card-link" style="color:#8f9eb0; cursor:default;">📎 暂无链接</span>`;
+
+                // 安全转义 (简单处理)
+                const safeTitle = escapeHtml(item.title);
+                const safeDesc = escapeHtml(item.description || '暂无描述');
+
+                html += `
+                    <div class="project-card" data-id="${item.id}">
+                        <div class="card-header">
+                            <span class="card-title">${safeTitle}</span>
+                            <span class="badge ${badgeClass}">${typeLabel}</span>
+                        </div>
+                        <div class="card-desc">${safeDesc}</div>
+                        <div class="card-footer">
+                            ${linkHtml}
+                            <button class="delete-btn" data-id="${item.id}" title="删除此项">🗑️</button>
+                        </div>
+                    </div>
+                `;
+            });
+
+            container.innerHTML = html;
+            updateStats();
+
+            // 为所有删除按钮绑定事件 (事件委托也可以, 这里直接用绑定)
+            document.querySelectorAll('.delete-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const id = btn.dataset.id;
+                    if (!id) return;
+                    if (confirm('确定要删除这个条目吗？')) {
+                        deleteProjectById(id);
+                    }
+                });
+            });
+        }
+
+        // 简单的转义，防止XSS
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // 删除项目
+        function deleteProjectById(id) {
+            projects = projects.filter(p => String(p.id) !== String(id));
+            saveToStorage();
+            render();
+        }
+
+        // 添加新项目
+        function addProject(title, description, type, link) {
+            if (!title || title.trim() === '') {
+                alert('标题不能为空');
+                return false;
+            }
+            const newId = crypto.randomUUID ? crypto.randomUUID() : Date.now() + '-' + Math.random().toString(36);
+            const newProject = {
+                id: newId,
+                title: title.trim(),
+                description: description.trim() || '暂无描述',
+                type: type,
+                link: link.trim() || ''
+            };
+            projects.push(newProject);
+            saveToStorage();
+            render();
+            return true;
+        }
+
+        // 重置为默认数据
+        function resetToDefault() {
+            if (confirm('重置会覆盖当前所有内容，确定吗？')) {
+                projects = DEFAULT_PROJECTS.map(p => ({ 
+                    ...p, 
+                    id: p.id || crypto.randomUUID?.() || Date.now() + '-' + Math.random() 
+                }));
+                saveToStorage();
+                // 过滤重置为全部
+                setActiveFilter('all');
+                render();
+            }
+        }
+
+        // 设置过滤状态
+        function setActiveFilter(filter) {
+            currentFilter = filter;
+            filterBtns.forEach(btn => {
+                const filterVal = btn.dataset.filter;
+                if (filterVal === filter) {
+                    btn.classList.add('active');
+                } else {
+                    btn.classList.remove('active');
+                }
+            });
+            render();
+        }
+
+        // ---------- 初始化 & 事件绑定 ----------
+        function init() {
+            loadFromStorage();
+            // 确保每个项目都有id (旧数据可能缺失)
+            projects = projects.map(p => {
+                if (!p.id) p.id = crypto.randomUUID?.() || Date.now() + '-' + Math.random();
+                return p;
+            });
+            saveToStorage(); 
+            
+            // 默认显示全部
+            currentFilter = 'all';
+            render();
+
+            // 过滤按钮监听
+            filterBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const filter = btn.dataset.filter;
+                    setActiveFilter(filter);
+                });
+            });
+
+            // 重置按钮
+            resetBtn.addEventListener('click', resetToDefault);
+
+            // 添加条目
+            addBtn.addEventListener('click', () => {
+                const title = newTitle.value;
+                const desc = newDesc.value;
+                const type = newType.value;
+                const link = newLink.value;
+                
+                if (addProject(title, desc, type, link)) {
+                    // 清空输入
+                    newTitle.value = '';
+                    newDesc.value = '';
+                    newLink.value = '';
+                    // 类型保留默认即可
+                    // 如果当前过滤不是全部，添加后可能看不到？但添加后一般希望看到，我们也可以自动切到全部？
+                    // 优雅一点：如果当前过滤与添加类型不符，可以提示或自动切换，这里选择自动切换到全部方便查看
+                    if (currentFilter !== 'all' && currentFilter !== type) {
+                        setActiveFilter('all');
+                    } else {
+                        render(); // render 已经在addProject里调用过，但setActiveFilter也会render，避免重复
+                        // 但addProject调用了render，而setActiveFilter也会，这里做判断。
+                        // 改进: addProject内部调render后，再检查过滤。
+                    }
+                    // 确保如果过滤不一致，切到全部
+                    if (currentFilter !== 'all' && currentFilter !== type) {
+                        setActiveFilter('all');
+                    }
+                }
+            });
+
+            // 回车快捷添加 (在标题输入框按回车)
+            newTitle.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    addBtn.click();
+                }
+            });
+
+            // 打招呼按钮 (保留原有功能)
+            if (greetBtn) {
+                greetBtn.addEventListener('click', () => {
+                    alert('👋 欢迎你来到 Hope 的小站！很高兴遇见你，随便逛逛～');
+                });
+            }
+        }
+
+        // 启动一切
+        init();
+    })();
+</script>
+
+<!-- 确保即使旧脚本存在也保持功能；原打招呼已被整合 -->
 </body>
 </html>
