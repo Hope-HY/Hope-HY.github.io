@@ -307,6 +307,16 @@
             font-style: italic;
         }
 
+        .storage-hint {
+            font-size: 0.8rem;
+            color: #6b7a8a;
+            margin-top: 12px;
+            padding: 8px 12px;
+            background: #f3f5f7;
+            border-radius: 30px;
+            display: inline-block;
+        }
+
         footer {
             margin-top: 30px;
             padding-top: 20px;
@@ -366,7 +376,7 @@
                 <h2>📁 我的文档 & 代码库</h2>
                 <span class="stats-badge" id="itemCountDisplay">0 项</span>
             </div>
-            <p class="text-muted">📌 可在线增删——数据保存在浏览器中，方便你随时整理作品。</p>
+            <p class="text-muted">📌 可在线增删——数据保存在浏览器本地，清空浏览器数据会重置。</p>
 
             <!-- 过滤栏 + 重置按钮 -->
             <div class="filter-bar">
@@ -411,6 +421,9 @@
                     <button class="btn btn-small" id="addProjectBtn">✨ 添加条目</button>
                     <span style="margin-left: auto; font-size:0.8rem; color:#5f6c7a;">点击卡片上的 🗑️ 可删除</span>
                 </div>
+            </div>
+            <div class="storage-hint">
+                💾 数据仅保存在当前浏览器中（localStorage）。无痕模式/清除数据后会自动恢复示例。
             </div>
         </section>
     </main>
@@ -461,13 +474,16 @@
             if (stored) {
                 try {
                     const parsed = JSON.parse(stored);
-                    if (Array.isArray(parsed) && parsed.length) {
+                    // 关键修复：只要解析结果是数组就使用（包括空数组），不再检查长度
+                    if (Array.isArray(parsed)) {
                         projects = parsed;
                         return;
                     }
-                } catch (e) {}
+                } catch (e) {
+                    console.warn("读取存储失败，使用默认数据", e);
+                }
             }
-            // 默认数据 (深拷贝)
+            // 没有存储或存储格式不对时，才使用默认数据
             projects = DEFAULT_PROJECTS.map(p => ({ ...p, id: p.id || crypto.randomUUID?.() || Date.now() + '-' + Math.random() }));
         }
 
@@ -506,7 +522,6 @@
                     `<a class="card-link" href="${escapeHtml(item.link)}" target="_blank" rel="noopener">🔗 查看详情 →</a>` : 
                     `<span class="card-link" style="color:#8f9eb0; cursor:default;">📎 暂无链接</span>`;
 
-                // 安全转义 (简单处理)
                 const safeTitle = escapeHtml(item.title);
                 const safeDesc = escapeHtml(item.description || '暂无描述');
 
@@ -528,7 +543,7 @@
             container.innerHTML = html;
             updateStats();
 
-            // 为所有删除按钮绑定事件 (事件委托也可以, 这里直接用绑定)
+            // 为所有删除按钮绑定事件
             document.querySelectorAll('.delete-btn').forEach(btn => {
                 btn.addEventListener('click', (e) => {
                     e.stopPropagation();
@@ -584,7 +599,6 @@
                     id: p.id || crypto.randomUUID?.() || Date.now() + '-' + Math.random() 
                 }));
                 saveToStorage();
-                // 过滤重置为全部
                 setActiveFilter('all');
                 render();
             }
@@ -614,7 +628,6 @@
             });
             saveToStorage(); 
             
-            // 默认显示全部
             currentFilter = 'all';
             render();
 
@@ -637,28 +650,17 @@
                 const link = newLink.value;
                 
                 if (addProject(title, desc, type, link)) {
-                    // 清空输入
                     newTitle.value = '';
                     newDesc.value = '';
                     newLink.value = '';
-                    // 类型保留默认即可
-                    // 如果当前过滤不是全部，添加后可能看不到？但添加后一般希望看到，我们也可以自动切到全部？
-                    // 优雅一点：如果当前过滤与添加类型不符，可以提示或自动切换，这里选择自动切换到全部方便查看
-                    if (currentFilter !== 'all' && currentFilter !== type) {
-                        setActiveFilter('all');
-                    } else {
-                        render(); // render 已经在addProject里调用过，但setActiveFilter也会render，避免重复
-                        // 但addProject调用了render，而setActiveFilter也会，这里做判断。
-                        // 改进: addProject内部调render后，再检查过滤。
-                    }
-                    // 确保如果过滤不一致，切到全部
+                    // 如果当前过滤与添加的类型不符，自动切换到全部，方便查看
                     if (currentFilter !== 'all' && currentFilter !== type) {
                         setActiveFilter('all');
                     }
                 }
             });
 
-            // 回车快捷添加 (在标题输入框按回车)
+            // 回车快捷添加
             newTitle.addEventListener('keypress', (e) => {
                 if (e.key === 'Enter') {
                     e.preventDefault();
@@ -666,7 +668,7 @@
                 }
             });
 
-            // 打招呼按钮 (保留原有功能)
+            // 打招呼按钮
             if (greetBtn) {
                 greetBtn.addEventListener('click', () => {
                     alert('👋 欢迎你来到 Hope 的小站！很高兴遇见你，随便逛逛～');
@@ -674,11 +676,8 @@
             }
         }
 
-        // 启动一切
         init();
     })();
 </script>
-
-<!-- 确保即使旧脚本存在也保持功能；原打招呼已被整合 -->
 </body>
 </html>
